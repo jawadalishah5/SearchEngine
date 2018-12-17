@@ -1,0 +1,12 @@
+DROP TABLE reverseIndex;
+
+CREATE TABLE reverseIndex (
+	word varchar(50),
+	docId int,
+	tfreq int,
+	hfreq int,
+	cfreq int
+
+);
+
+

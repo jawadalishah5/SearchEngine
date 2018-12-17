@@ -1,11 +1,14 @@
-import pymysql
-import pymysql.cursors
+import sqlite3
+from sqlite3 import Error
 
 
-# Connect to the database
-connection = pymysql.connect(host='localhost',
-                             user='root',
-                             password='Nust12345678',
-                             db='tf',
-                             charset='utf8mb4',
-                             cursorclass=pymysql.cursors.DictCursor)
+def create_connection(db_file):
+
+    try:
+        conn = sqlite3.connect(db_file)
+        return conn
+    except Error as e:
+        print(e)
+ 
+    return None
+

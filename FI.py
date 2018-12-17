@@ -1,58 +1,27 @@
 #forward indexer
-#from connection import connector
-import time
-import sqlite3
-from sqlite3 import Error
 
 
-def create_table(conn, create_table_sql):
-    """ create a table from the create_table_sql statement
-    :param conn: Connection object
-    :param create_table_sql: a CREATE TABLE statement
-    :return:
-    """
-    try:
-        c = conn.cursor()
-        c.execute(create_table_sql)
-    except Error as e:
-        print(e)
- 
-
-
-def create_connection(db_file):
-
-    try:
-        conn = sqlite3.connect(db_file)
-        return conn
-    except Error as e:
-        print(e)
- 
-    return None
-
-
-
-
+from connection import create_connection
 
 
 def forwardI(docId,title,headings,content,url):
     
-    dic=dict()
+    dic=dict()     #dictionary for a single document
+                    #having docIds as keys which refer to a
+                    #list having sublist of titles,headings,contents
+    
     url=url.replace("\\","/")
-    
-    
     dic[docId]=[title,headings,content,url]
-    count=0
-    print(dic[docId][3])
-    for i in dic[docId][2]:
-        count+=1;
-    print(count)
-    
-    pushInDB(dic,docId)
 
 
+    pushInDB(dic,docId) #push data into the database
+
+
+
+#this function push forward indexed data into database for a single file
 def pushInDB(dic,docId):
 
-    start=time.time()
+
  
 
 
@@ -60,8 +29,10 @@ def pushInDB(dic,docId):
     conn = create_connection('tf.db')
     cur = conn.cursor()
     
-
-
+    #database has 4 tables: [titles,headings,contents,urls]
+    #each table has a docId column
+    #and another colum of title,heading,content,url respectively
+    
     for tokens in dic[docId][0]:
         
 
@@ -97,35 +68,6 @@ def pushInDB(dic,docId):
     cur.execute(sql,iin)
     conn.commit()
         
-
-##    for tokens in dic[docId][0]:
-##        
-##        sql="INSERT INTO `titles` (docIds,title) VALUES ('%s','%s')" % (docId, tokens)
-##        
-##        mycursor.execute(sql)
-##        
-##        mydb.commit()
-##
-##    for tokens in dic[docId][1]:
-##            
-##        sql1="INSERT INTO `headings` (docIds,heading) VALUES ('%s','%s')" % (docId, tokens)
-##
-##        mycursor.execute(sql1)
-##        
-##        
-##        mydb.commit()
-##
-##    for tokens in dic[docId][2]:
-##            
-##        sql2="INSERT INTO `contents` (docIds,content) VALUES ('%s','%s')" % (docId, tokens)
-##        
-##
-##        mycursor.execute(sql2)
-##        
-##        mydb.commit()
-
-    
-    c=time.time()-start
-    print(c)
+       
     
     

@@ -1,0 +1,44 @@
+DROP TABLE titles;
+DROP TABLE headings;
+DROP TABLE contents;
+DROP TABLE urls;
+
+CREATE TABLE IF NOT EXISTS titles
+
+                                    (docIds INTEGER(10),
+
+                                    title VARCHAR(50)
+
+                                    
+
+                            );
+							
+CREATE TABLE IF NOT EXISTS headings
+
+                                (docIds INTEGER(10),
+
+                                heading VARCHAR(50)
+
+                                
+
+                        );
+						
+CREATE TABLE IF NOT EXISTS contents
+
+                                (docIds INTEGER(10),
+
+                                content VARCHAR(50)
+
+                                
+
+                        );
+						
+CREATE TABLE IF NOT EXISTS urls
+
+                                (docIds INTEGER(10),
+
+                                url VARCHAR(100)
+
+                                
+
+                        );

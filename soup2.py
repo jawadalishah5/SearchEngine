@@ -5,6 +5,12 @@ from nltk.stem import PorterStemmer
 import os
 import re
 from FI import forwardI
+from RI import reverseI
+
+
+def removeHead(data):
+    end=data.rfind('Simple English Wikipedia, the free encyclopedia')
+    return data[0:end]
 
 
 #strip main text from webpage
@@ -25,42 +31,41 @@ def removeStopwords(word_tokens):
     for w in word_tokens: 
         if w not in stopwords and w!="":
             filtered_list.append(w.lower())
-    return stemmer(filtered_list)
+    return filtered_list
 
 #this function is only called in dataExtractor Function which returns tokenized data neatly filtered out
 def returnNeatData(text):
     text=removeText(text)
     text=re.sub(r'\d+', '', text)   #removes numbers from content
     text=re.sub(r'[^\w]', ' ', text)  #removes symbols from tokens
-    text=nltk.word_tokenize(text)
-    return removeStopwords(text)
-
+    
+    return removeStopwords(nltk.word_tokenize(text))
     
 
-#this funtion makes the words with different suffix the same
-def stemmer(tokens):
-    ps = PorterStemmer()
-    filtered_list=[]
-
-    for w in tokens:
-        filtered_list.append(ps.stem(w))
-    return filtered_list
+###this funtion makes the words with different suffix the same
+##def stemmer(tokens):
+##    ps = PorterStemmer()
+##    filtered_list=[]
+##
+##    for w in tokens:
+##        filtered_list.append(ps.stem(w))
+##    return filtered_list
 
     
 #function which parse the single html page and write its title and content in another html file
-def dataExtractor(fileRead,fileWrite):
+def dataExtractor(fileRead):
 
     with open(fileRead, "rb") as file:   #file reading
         data = BeautifulSoup(file.read(), "lxml")
     
     headings=[]    
     
-    writeData=open(fileWrite,"w",encoding='utf-8')        #file writing
+    #writeData=open(fileWrite,"w",encoding='utf-8')        #file writing
 
     if data.title!=None:    #writing title
 
         title=(data.title.text).lower()
-        writeData.write(title+"\n")           
+        #writeData.write(title+"\n")           
         
     for heading in data.find_all(re.compile('^h[1-6]$')): 
         head=heading.text.strip()
@@ -68,8 +73,8 @@ def dataExtractor(fileRead,fileWrite):
         headings.extend(head)
         headings=removeStopwords(headings)
         
-    for heading in headings:
-        writeData.write(heading)        #writing headings
+    #for heading in headings:
+        #writeData.write(heading)        #writing headings
 
         
     text=returnNeatData(data.get_text()) 
@@ -78,40 +83,51 @@ def dataExtractor(fileRead,fileWrite):
     
     
 
-    writeData.write(str(text)) #writing  tokenized content
-    writeData.close()
-
+    #writeData.write(str(text)) #writing  tokenized content
+    #writeData.close()
     
-    return data.title,headings,text
+   
+    return data.title,headings,text,
     
 
 #function which is used to find all the html files from wikipedia data set and then call the extract() function to parse them all one by one
 def extractAll():
 
-    fileWrite="C:\\Users\\Shah_G\\AppData\\Local\\Programs\\Python\\Python36-32\\htmlPages\\csvFile.csv"
-    fileRead="C:\\Users\\Shah_G\\Downloads\\project data structure\\wiki-data"
+    #fileWrite="C:\\Users\\Shah_G\\AppData\\Local\\Programs\\Python\\Python36-32\\htmlPages\\csvFile.csv"
+    fileRead="C:\\Users\Shah_G\\Downloads\\project data structure\\wiki-data\\wiki-data\\articles"
     totalFiles=0;
     done=0
     for root,dirs,files in os.walk(fileRead):
         for i in files:
+            
             if i.endswith((".html","htm")):
                 totalFiles+=1
-                title,headings,content=dataExtractor(str(root)+"\\"+i,fileWrite)
+                url=root+"\\"+i;
+                print(url)
+                title,headings,content=dataExtractor(url)
                 if title==None:
                     title=i[:-5]
+                    title=removeHead(title)
+                    title=returnNeatData(title)
                 else:
                     title=title.text
-
-                forwardI(totalFiles,title,headings,content)
-                    
+                    title=removeHead(title)
+                    title=returnNeatData(title)
+                
+                forwardI(totalFiles,title,headings,content,url.replace('"',"'"))
+                #reverseI(totalFiles,title,headings,content)   
                 print(totalFiles)
                 done+=1
-        if done>=50:break
+        if done>=15:break
+        
     
+
+
+
 
 extractAll()
 
 #fileWrite="C:\\Users\\Shah_G\\AppData\\Local\\Programs\\Python\\Python36-32\\htmlPages\\csvFile.csv"
-#fileRead ="C:\\Users\\Shah_G\\AppData\\Local\\Programs\\Python\\Python36-32\\htmlPages\\Alan Walker (music producer) - Wikipedia.html"
+#fileRead ="C:\\Users\\Shah_G\\Downloads\\emusuk\\Elon Musk - Wikipedia.html"
 
 #dataExtractor(fileRead,fileWrite)

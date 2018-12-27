@@ -1,4 +1,4 @@
-DROP TABLE reverseIndex;
+DROP TABLE reverseIndex,urls;
 
 CREATE TABLE reverseIndex (
 	word varchar(50),
@@ -7,6 +7,12 @@ CREATE TABLE reverseIndex (
 	hfreq int,
 	cfreq int
 
+);
+
+CREATE TABLE urls(
+
+	docIds int,
+	url varchar(200)
 );
 
 

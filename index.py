@@ -116,15 +116,9 @@ def extractAll():
                     title=removeHead(title)
                     title=returnNeatData(title)
                 
-                forwardI(totalFiles,title,headings,content,url.replace('"',"'"))    #forward indexing function is called
-                reverseI(totalFiles,title,headings,content)                         #reverse indexing funtion is called
+                #forwardI(totalFiles,title,headings,content,url.replace('"',"'").replace("\\","/"))    #forward indexing function is called
+                reverseI(totalFiles,title,headings,content,url.replace('"',"'").replace("\\","/"))                         #reverse indexing funtion is called
                 print(totalFiles)
-                
-        if totalFiles>=100:break
-        
-    
-
-
 
 
 extractAll()        #main method

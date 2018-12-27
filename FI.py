@@ -10,7 +10,6 @@ def forwardI(docId,title,headings,content,url):
                     #having docIds as keys which refer to a
                     #list having sublist of titles,headings,contents
     
-    url=url.replace("\\","/")
     dic[docId]=[title,headings,content,url]
 
 

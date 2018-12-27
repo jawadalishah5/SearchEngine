@@ -2,7 +2,7 @@
 from connection import create_connection
 
 
-def reverseI(docId,titles,headings,contents):
+def reverseI(docId,titles,headings,contents,url):
     tempDic=dict()      #temporary dictionary for single document
                         #having words as keys which refer to a list
                         #having docId,frequency in title,headings,contents
@@ -41,11 +41,11 @@ def reverseI(docId,titles,headings,contents):
             else:
                 tempDic[word]=[docId,0,0,1]
 
-    reversePushInDB(tempDic,docId)        #pushing dictionary in database
+    reversePushInDB(tempDic,docId,url)        #pushing dictionary in database
 
 
 #function which push data in database
-def reversePushInDB(dic,docId):
+def reversePushInDB(dic,docId,url):
 
 
  
@@ -60,6 +60,14 @@ def reversePushInDB(dic,docId):
         
         insert_in=(token,docId,dic[token][1],dic[token][2],dic[token][3])
         cur.execute(sql,insert_in)
+
+    sql = ''' INSERT INTO urls(docIds,url)
+          VALUES(?,?) '''
+
+    
+    iin=(docId,url)
+    cur.execute(sql,iin)
+    
     conn.commit()
 
     
